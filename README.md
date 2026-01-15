@@ -7,7 +7,8 @@ Here is my research project website "AI, Ethics and Cognitive Personality: Can L
 This project explores how large language models (LLMs) make moral decisions compared to humans. It combines Big Five personality traits, the peer-reviewed CNI model to analyse morality and AI generated agents facing standardized moral dilemmas. 
 
 
-Main files
+Main files:
+
 app.py – Flask app and routes for the web interface
 
 templates/ – HTML templates for context, data/methods, results, and report pages
