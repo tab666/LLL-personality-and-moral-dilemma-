@@ -1,0 +1,30 @@
+{% extends "base.html" %} {% block title %}Findings - LLM Moral Judgment Study{%
+endblock %} {% block header_title %}Research Findings{% endblock %} {% block
+content %}
+<section class="page-content">
+  <article class="content-block">
+    <h2>WORK IN PROGRESS STILL</h2>
+    <p>Come back in two weeks :D</p>
+  </article>
+
+  <!-- You can add data visualization here -->
+  <article class="content-block">
+    <h2>Data Analysis</h2>
+    <p>Please go to the vizualisations tab it's quite cool !</p>
+    <div id="dataVisualization">
+      <!-- Your graphs will go here -->
+    </div>
+  </article>
+</section>
+{% endblock %} {% block extra_scripts %}
+<script>
+  // Fetch data from Flask API
+  fetch("/api/data")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Data loaded:", data);
+      // You can process and visualize the data here
+    })
+    .catch((error) => console.error("Error loading data:", error));
+</script>
+{% endblock %}

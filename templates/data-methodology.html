@@ -1,0 +1,615 @@
+{% extends "base.html" %}
+{% block title %}Data and Methodology - LLM Moral Judgment Study{% endblock %}
+{% block header_title %}Data and Methodology{% endblock %}
+
+{% block extra_head %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+  section[id] {
+    scroll-margin-top: 100px;
+  }
+  
+  /* CNI Analysis styles */
+  .cni-parameters {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .parameter-box {
+    flex: 1;
+    min-width: 280px;
+    background-color: rgba(27, 109, 128, 0.15);
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 4px solid #1b6d80;
+  }
+  .parameter-box h3 {
+    color: #1b6d80;
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .parameter-box .example {
+    font-style: italic;
+    color: #555;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+  }
+  
+  /* Human Dataset styles */
+  .stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, #1b6d80, #086b69);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+  }
+  .stat-value {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  .stat-label {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+  .chart-section {
+    background: linear-gradient(135deg, rgba(114, 110, 164, 0.15), rgba(140, 120, 200, 0.15));
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 40px;
+  }
+  .chart-section h3 {
+    color: #8c78c8;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 24px;
+  }
+  .chart-description {
+    color: #ccc;
+    margin-bottom: 25px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .chart-container {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 30px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  .axis text {
+    fill: white;
+    font-size: 12px;
+  }
+  .axis line, .axis path {
+    stroke: white;
+  }
+  .grid line {
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-dasharray: 2, 2;
+  }
+  .bar-label {
+    fill: white;
+    font-size: 11px;
+    font-weight: bold;
+  }
+  .tooltip-chart {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.98);
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    font-size: 13px;
+    z-index: 1000;
+    border: 2px solid #1b6d80;
+    opacity: 0;
+  }
+  
+  /* LLM Profiles styles */
+  .big-five-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .trait-box {
+    background-color: rgba(27, 109, 128, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .trait-box h3 {
+    color: #1b6d80;
+    margin-bottom: 10px;
+  }
+  .models-comparison {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .model-card {
+    max-width: 400px;
+    width: 100%;
+    background-color: rgba(27, 109, 128, 0.2);
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #1b6d80;
+    text-align: center;
+  }
+  .model-card h3 {
+    color: #1b6d80;
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- CNI ANALYSIS SECTION -->
+<section id="cni-analysis-section">
+<section class="page-content">
+  <article class="content-block">
+    <h2>Why CNI parameters?</h2>
+    <p>
+      In the literature, previous researches measure the morality of LLM using a
+      binary approach: either their response to ethical dilemma is utilitarian,
+      either it is deontological. In my study, I aim to be more specific and use
+      a more complex measure of my artificial agents moral values.
+    </p>
+  </article>
+
+  <article class="content-block">
+    <h2>CNI Model Parameters</h2>
+    <p>
+      The CNI model breaks down moral judgments into three distinct parameters:
+    </p>
+    <div class="cni-parameters">
+      <div class="parameter-box">
+        <h3>C - Consequences</h3>
+        <p><strong>Utilitarian thinking</strong></p>
+        <p>
+          Sensitivity to the outcomes and consequences of actions. High C scores
+          indicates a utilitarian approach to moral reasoning.
+        </p>
+        <p class="example">
+          Example: "Moderate sensitivity to consequences (C=60)"
+        </p>
+      </div>
+      <div class="parameter-box">
+        <h3>N - Norms</h3>
+        <p><strong>Deontological thinking</strong></p>
+        <p>
+          Sensitivity to moral norms and rules. High N scores indicate a
+          deontological approach emphasizing duties and principles.
+        </p>
+        <p class="example">Example: "Strong sensitivity to norms (N=85)"</p>
+      </div>
+      <div class="parameter-box">
+        <h3>I - Inaction</h3>
+        <p><strong>Action bias</strong></p>
+        <p>
+          General bias toward inaction versus action. High I scores indicate a
+          preference for not intervening.
+        </p>
+        <p class="example">Example: "Low bias toward inaction (I=25)"</p>
+      </div>
+    </div>
+  </article>
+</section>
+</section>
+
+<!-- HUMAN DATASET SECTION -->
+<section id="human-dataset-section">
+<section class="page-content">
+  <article class="content-block">
+    <h2>Human Participants Dataset</h2>
+    <p>
+      This dataset contains 250 real human participants from the Luke and
+      Gawronski (2022) study. They showed the link between Big Five personality
+      traits and their moral (according to the CNI parameters).
+    </p>
+  </article>
+
+  <div class="stats-overview">
+    <div class="stat-card">
+        <div class="stat-label" style="font-size: 20px;">Total Participants</div>
+      <div class="stat-value">250</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" style="font-size: 20px; margin-top: 1px">Big Five Traits</div>
+      <div class="stat-label" style="font-size: 14px; margin-top: 8px">
+        Openness to Experience 
+        Conscientiousness
+        Extraversion
+        Agreeableness
+        Neuroticism
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" style="font-size: 20px; margin-top: 1px">CNI Parameters</div>
+      <div class="stat-label" style="font-size: 14px; margin-top: 8px">
+        Sensibility to consequences, Sensibility to moral norms, Preference toward inaction</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-label" style="font-size: 20px;">Moral Dilemmas</div>
+      <div class="stat-value">48</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart 1: CNI by Openness -->
+  <div class="chart-section">
+    <h3>CNI parameters by Openness</h3>
+    <p class="chart-description">
+      How do the sensibility to consequences (C), sensibilty to moral norms (N),
+      and general preference for inaction (I) of an individual vary across
+      different levels of openness to experience?
+    </p>
+    <div class="chart-container">
+      <div id="chart1"></div>
+    </div>
+  </div>
+
+  <!-- Chart 2: CNI by Conscientiousness -->
+  <div class="chart-section">
+    <h3>CNI Parameters by Conscientiousness</h3>
+    <p class="chart-description">
+      How do the sensibility to consequences (C), sensibilty to moral norms (N),
+      and general preference for inaction (I) of an individual vary across
+      different levels of conscientiousness?
+    </p>
+    <div class="chart-container">
+      <div id="chart2"></div>
+    </div>
+  </div>
+
+  <!-- Chart 3: CNI by Extraversion -->
+  <div class="chart-section">
+    <h3>CNI Parameters by Extraversion</h3>
+    <p class="chart-description">
+      How do the sensibility to consequences (C), sensibilty to moral norms (N),
+      and general preference for inaction (I) of an individual vary across
+      different levels of extraversion?
+    </p>
+    <div class="chart-container">
+      <div id="chart3"></div>
+    </div>
+  </div>
+
+  <!-- Chart 4: CNI by Agreeableness -->
+  <div class="chart-section">
+    <h3>CNI Parameters by Agreeableness</h3>
+    <p class="chart-description">
+      How do the sensibility to consequences (C), sensibilty to moral norms (N),
+      and general preference for inaction (I) of an individual vary across
+      different levels of agreebleness ?
+    </p>
+    <div class="chart-container">
+      <div id="chart4"></div>
+    </div>
+  </div>
+
+  <!-- Chart 5: CNI by Neuroticism -->
+  <div class="chart-section">
+    <h3>CNI Parameters by Neuroticism</h3>
+    <p class="chart-description">
+      How do the sensibility to consequences (C), sensibilty to moral norms (N),
+      and general preference for inaction (I) of an individual vary across
+      different levels of neuroticism?
+    </p>
+    <div class="chart-container">
+      <div id="chart5"></div>
+    </div>
+  </div>
+
+  <div class="tooltip-chart" id="tooltip-human"></div>
+</section>
+</section>
+
+<!-- LLM PROFILES SECTION -->
+<section id="llm-profiles-section">
+<section class="page-content">
+  <article class="content-block">
+    <h2>Creating Artificial Agents</h2>
+    <p>
+      The key part of my project is to generate artificial agents using the LLaMA-3 
+      open-source LLM. Each profile is created from the Big Five personality traits 
+      of a real participant from the Luke and Gawronski dataset (2022).
+    </p>
+  </article>
+
+  <article class="content-block">
+    <h2>The Big Five Personality Traits</h2>
+    <div class="big-five-grid">
+      <div class="trait-box">
+        <h3>Openness</h3>
+        <p>Imagination, curiosity, willingness to try new experiences</p>
+      </div>
+      <div class="trait-box">
+        <h3>Conscientiousness</h3>
+        <p>Organization, dependability, goal-directed behavior</p>
+      </div>
+      <div class="trait-box">
+        <h3>Extraversion</h3>
+        <p>Sociability, assertiveness, emotional expressiveness</p>
+      </div>
+      <div class="trait-box">
+        <h3>Agreeableness</h3>
+        <p>Compassion, cooperation, trust in others</p>
+      </div>
+      <div class="trait-box">
+        <h3>Neuroticism</h3>
+        <p>Emotional stability, tendency toward negative emotions</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="content-block">
+    <h2>LLaMA-3 Model</h2>
+    <div class="models-comparison">
+      <div class="model-card">
+        <h3>LLaMA-3</h3>
+        <p>Meta's latest open-source language model, used to create all 250 artificial agents in this study.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="content-block">
+    <h2>Generation Process</h2>
+    <p>
+      Based on prompts developed by Chiu et al. (2024), I create artificial
+      agents by providing LLaMA-3 with specific personality trait scores.
+    </p>
+    <p>
+      For example, if a real participant scored 4.2 in conscientiousness and 3.8
+      in neuroticism, the artificial agent is prompted to embody these same trait levels.
+    </p>
+  </article>
+
+  <article class="content-block highlight">
+    <h2>Hypothesis</h2>
+    <p>
+      I make the hypothesis (supported by previous research on LLM agents)
+      that artificial agents with matched Big Five scores will accurately replicate the
+      moral decisions of the real participants whose personality they simulate.
+    </p>
+  </article>
+</section>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  let humanData = [];
+
+  // Load data
+  fetch("/api/human-data")
+    .then((response) => response.json())
+    .then((data) => {
+      humanData = data;
+      createAllCharts();
+    })
+    .catch((error) => {
+      console.error("Error loading data:", error);
+      document.querySelectorAll(".chart-container").forEach((container) => {
+        container.innerHTML =
+          '<p style="color: white; text-align: center;">Error loading data. Please check console.</p>';
+      });
+    });
+
+  function createAllCharts() {
+    createCNIByTraitChart("Open", "Openness", "#chart1");
+    createCNIByTraitChart("Con", "Conscientiousness", "#chart2");
+    createCNIByTraitChart("Extra", "Extraversion", "#chart3");
+    createCNIByTraitChart("Agree", "Agreeableness", "#chart4");
+    createCNIByTraitChart("Neuro", "Neuroticism", "#chart5");
+  }
+
+  function createCNIByTraitChart(traitKey, traitName, containerId) {
+    // Group participants into 5 bins based on trait score
+    const bins = ["Very Low", "Low", "Medium", "High", "Very High"];
+
+    // Calculate percentiles
+    const sortedValues = humanData
+      .map((d) => d[traitKey])
+      .sort((a, b) => a - b);
+    const p20 = d3.quantile(sortedValues, 0.2);
+    const p40 = d3.quantile(sortedValues, 0.4);
+    const p60 = d3.quantile(sortedValues, 0.6);
+    const p80 = d3.quantile(sortedValues, 0.8);
+
+    // Classify participants into bins
+    const binnedData = humanData.map((d) => ({
+      ...d,
+      bin:
+        d[traitKey] <= p20
+          ? "Very Low"
+          : d[traitKey] <= p40
+          ? "Low"
+          : d[traitKey] <= p60
+          ? "Medium"
+          : d[traitKey] <= p80
+          ? "High"
+          : "Very High",
+    }));
+
+    // Calculate average C, N, I for each bin
+    const aggregated = bins.map((bin) => {
+      const filtered = binnedData.filter((d) => d.bin === bin);
+      return {
+        bin: bin,
+        C: d3.mean(filtered, (d) => d.C),
+        N: d3.mean(filtered, (d) => d.N),
+        I: d3.mean(filtered, (d) => d.I),
+        count: filtered.length,
+      };
+    });
+
+    // Create chart
+    const margin = { top: 20, right: 30, bottom: 60, left: 60 };
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3
+      .select(containerId)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Scales
+    const x0 = d3.scaleBand().domain(bins).range([0, width]).padding(0.2);
+
+    const x1 = d3
+      .scaleBand()
+      .domain(["C", "N", "I"])
+      .range([0, x0.bandwidth()])
+      .padding(0.05);
+
+    const y = d3.scaleLinear().domain([0, 1]).range([height, 0]);
+
+    const color = d3
+      .scaleOrdinal()
+      .domain(["C", "N", "I"])
+      .range(["#1b6d80", "#8c78c8", "#f8d697"]);
+
+    // Grid
+    svg
+      .append("g")
+      .attr("class", "grid")
+      .call(d3.axisLeft(y).ticks(5).tickSize(-width).tickFormat(""));
+
+    // X Axis
+    svg
+      .append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${height})`)
+      .call(d3.axisBottom(x0))
+      .selectAll("text")
+      .style("font-size", "11px");
+
+    // Y Axis
+    svg.append("g").attr("class", "axis").call(d3.axisLeft(y).ticks(5));
+
+    // Y Axis Label
+    svg
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -height / 2)
+      .attr("y", -45)
+      .style("text-anchor", "middle")
+      .style("fill", "white")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .text("Average Score");
+
+    // X Axis Label
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 50)
+      .style("text-anchor", "middle")
+      .style("fill", "white")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .text(`${traitName} Level`);
+
+    // Tooltip
+    const tooltip = d3.select("#tooltip-human");
+
+    // Bars
+    const binGroups = svg
+      .selectAll(".bin-group")
+      .data(aggregated)
+      .enter()
+      .append("g")
+      .attr("class", "bin-group")
+      .attr("transform", (d) => `translate(${x0(d.bin)},0)`);
+
+    ["C", "N", "I"].forEach((param) => {
+      binGroups
+        .append("rect")
+        .attr("x", x1(param))
+        .attr("y", (d) => y(d[param]))
+        .attr("width", x1.bandwidth())
+        .attr("height", (d) => height - y(d[param]))
+        .attr("fill", color(param))
+        .attr("opacity", 0.85)
+        .style("cursor", "pointer")
+        .on("mouseover", function (event, d) {
+          d3.select(this).transition().duration(200).attr("opacity", 1);
+
+          tooltip.style("opacity", 1).html(`
+                        <strong>${traitName}: ${d.bin}</strong><br>
+                        <strong style="color: ${color(
+                          param
+                        )};">${param} Parameter:</strong> ${d[param].toFixed(3)}<br>
+                        <small>n = ${d.count} participants</small>
+                    `);
+        })
+        .on("mousemove", function (event) {
+          tooltip
+            .style("left", event.pageX + 15 + "px")
+            .style("top", event.pageY - 15 + "px");
+        })
+        .on("mouseout", function () {
+          d3.select(this).transition().duration(200).attr("opacity", 0.85);
+
+          tooltip.style("opacity", 0);
+        });
+
+      // Value labels on top of bars
+      binGroups
+        .append("text")
+        .attr("class", "bar-label")
+        .attr("x", x1(param) + x1.bandwidth() / 2)
+        .attr("y", (d) => y(d[param]) - 5)
+        .attr("text-anchor", "middle")
+        .text((d) => d[param].toFixed(2))
+        .style("font-size", "10px")
+        .style("fill", "white");
+    });
+
+    // Legend
+    const legend = svg
+      .append("g")
+      .attr("transform", `translate(${width - 150}, 0)`);
+
+    ["C", "N", "I"].forEach((param, i) => {
+      const legendRow = legend
+        .append("g")
+        .attr("transform", `translate(0, ${i * 25})`);
+
+      legendRow
+        .append("rect")
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", color(param));
+
+      legendRow
+        .append("text")
+        .attr("x", 22)
+        .attr("y", 12)
+        .style("fill", "white")
+        .style("font-size", "12px")
+        .text(
+          param === "C" ? "Consequences" : param === "N" ? "Norms" : "Inaction"
+        );
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}LLM Moral Judgment Study{% endblock %}</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body>
+    <!-- Libra Scale Menu Button -->
+    <button class="hamburger-menu" id="hamburgerMenu" aria-label="Menu">
+      <img
+        src="{{ url_for('static', filename='libra-static.png') }}"
+        alt="Menu"
+        class="menu-icon"
+        id="balanceIcon"
+      />
+    </button>
+
+    <!-- Dropdown Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay">
+      <div class="dropdown-menu">
+        <button class="close-menu" id="closeMenu" aria-label="Close Menu">
+          &times;
+        </button>
+
+        <ul class="nav-menu">
+          <li>
+            <a
+              href="{{ url_for('welcome') }}"
+              class="{% if page == 'welcome' %}active{% endif %}"
+            >
+              Start
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="{{ url_for('index') }}"
+              class="{% if page == 'home' %}active{% endif %}"
+            >
+              Home
+            </a>
+          </li>
+
+          <li class="nav-section">
+            <a
+              href="{{ url_for('context') }}"
+              class="section-title section-title-link"
+            >
+              Context
+            </a>
+            <ul class="section-links">
+              <li>
+                <a href="{{ url_for('context') }}#motivation-section">
+                  Motivation
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('context') }}#objectives-section">
+                  Objectives
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-section">
+            <a
+              href="{{ url_for('data_methodology') }}"
+              class="section-title section-title-link"
+            >
+              Data and Methodology
+            </a>
+            <ul class="section-links">
+              <li>
+                <a
+                  href="{{ url_for('data_methodology') }}#cni-analysis-section"
+                >
+                  CNI Analysis
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{{ url_for('data_methodology') }}#human-dataset-section"
+                >
+                  Human Dataset
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{{ url_for('data_methodology') }}#llm-profiles-section"
+                >
+                  LLM Profiles
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-section">
+            <a
+              href="{{ url_for('results') }}"
+              class="section-title section-title-link"
+            >
+              Results
+            </a>
+            <ul class="section-links">
+              <li>
+                <a href="{{ url_for('results') }}#visualizations-section">
+                  Visualizations
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('results') }}#artificial-dataset-section">
+                  Artificial Dataset
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-section">
+            <span class="section-title">About the Study</span>
+            <ul class="section-links">
+              <li>
+                <a href="{{ url_for('findings') }}">Findings</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <header>
+      <h1>{% block header_title %}LLM Moral Judgment Study{% endblock %}</h1>
+    </header>
+
+    <main>{% block content %}{% endblock %}</main>
+
+    {% block extra_scripts %}{% endblock %}
+
+    <!-- 🔥 GLOBAL TOOLTIP (required for D3 charts) 🔥 -->
+    <div class="tooltip-chart" id="tooltip"></div>
+  </body>
+</html>

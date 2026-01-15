@@ -1,0 +1,53 @@
+{% extends "base.html" %} {% block title %}CNI Model - LLM Moral Judgment
+Study{% endblock %} {% block header_title %}CNI{% endblock %} {% block content
+%}
+<section class="page-content">
+  <article class="content-block">
+    <h2>Why CNI parameters?</h2>
+    <p>
+      In the literature, previous researches measure the morality of LLM using a
+      binary approach: either their response to ethical dilemma is utilitarian,
+      either it is deontological. In my study, I aim to be more specific and use
+      a more complex measure of my artificial agents moral values.
+    </p>
+  </article>
+
+  <article class="content-block">
+    <h2>CNI Model Parameters</h2>
+    <p>
+      The CNI model breaks down moral judgments into three distinct parameters:
+    </p>
+    <div class="cni-parameters">
+      <div class="parameter-box">
+        <h3>C - Consequences</h3>
+        <p><strong>Utilitarian thinking</strong></p>
+        <p>
+          Sensitivity to the outcomes and consequences of actions. High C scores
+          indicates a utilitarian approach to moral reasoning.
+        </p>
+        <p class="example">
+          Example: "Moderate sensitivity to consequences (C=60)"
+        </p>
+      </div>
+      <div class="parameter-box">
+        <h3>N - Norms</h3>
+        <p><strong>Deontological thinking</strong></p>
+        <p>
+          Sensitivity to moral norms and rules. High N scores indicate a
+          deontological approach emphasizing duties and principles.
+        </p>
+        <p class="example">Example: "Strong sensitivity to norms (N=85)"</p>
+      </div>
+      <div class="parameter-box">
+        <h3>I - Inaction</h3>
+        <p><strong>Action bias</strong></p>
+        <p>
+          General bias toward inaction versus action. High I scores indicate a
+          preference for not intervening.
+        </p>
+        <p class="example">Example: "Low bias toward inaction (I=25)"</p>
+      </div>
+    </div>
+  </article>
+</section>
+{% endblock %}

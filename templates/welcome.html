@@ -1,0 +1,499 @@
+{% extends "base.html" %} {% block title %}Welcome - LLM Moral Judgment Study{%
+endblock %} {% block header_title %}Welcome{% endblock %} {% block extra_head %}
+<style>
+  /* Hide hamburger menu on welcome page */
+  .hamburger-menu {
+    display: none !important;
+  }
+
+  .welcome-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 20px;
+  }
+
+  .welcome-card {
+    background: linear-gradient(
+      135deg,
+      rgba(27, 109, 128, 0.95),
+      rgba(8, 107, 105, 0.95)
+    );
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    color: white;
+    text-align: center;
+    animation: fadeIn 1s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .welcome-card h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .welcome-card p {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+  }
+
+  .dilemma-box {
+    background: rgba(248, 214, 151, 0.95);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .dilemma-question {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1b6d80;
+  }
+
+  .dilemma-description {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 25px;
+    color: black;
+  }
+
+  .response-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .response-btn {
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn-yes {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+  }
+
+  .btn-yes:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.6);
+  }
+
+  .btn-no {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+  }
+
+  .btn-no:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
+  }
+
+  .thank-you-message {
+    display: none;
+    animation: fadeIn 0.8s ease-in;
+  }
+
+  .prompt-box {
+    background: rgba(114, 110, 164, 0.85);
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .prompt-box h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .prompt-box p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: white;
+  }
+
+  .continue-btn {
+    padding: 18px 50px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #f8d697, #ffc857);
+    color: #1b6d80;
+    margin-top: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(248, 214, 151, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .continue-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 35px rgba(248, 214, 151, 0.6);
+  }
+
+  .loading {
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="welcome-container">
+  <div class="welcome-card" id="welcomeCard">
+    <h1>Tough decision ahead !</h1>
+    <p>
+      Getting started, test yourself against this randomly generated moral
+      dilemma.
+    </p>
+
+    <div class="dilemma-box" id="dilemmaBox">
+      <div class="dilemma-question" id="dilemmaQuestion">
+        Loading dilemma<span class="loading">...</span>
+      </div>
+      <div class="dilemma-description" id="dilemmaDescription"></div>
+
+      <div class="response-buttons" id="responseButtons">
+        <button class="response-btn btn-yes" onclick="submitResponse('Yes')">
+          Yes
+        </button>
+        <button class="response-btn btn-no" onclick="submitResponse('No')">
+          No
+        </button>
+      </div>
+    </div>
+
+    <div class="thank-you-message" id="thankYouMessage">
+      <p style="font-size: 16px; opacity: 0.9">
+        You answered <strong id="userResponse"></strong>
+      </p>
+      <p style="font-size: 22px; margin-bottom: 15px">
+        Wonder if an AI would agree ?
+      </p>
+      <div class="prompt-box">
+        <p>
+          What if artificial intelligence could reproduce your personality
+          traits and reasoning ?
+        </p>
+        <p>
+          <strong
+            >Would an Large Language Model with your personality answer the same
+            way you did?</strong
+          >
+        </p>
+        <p style="margin-top: 20px; font-size: 17px">
+          This is exactly what my research explore. I study whether a Large
+          Language Models, when given human personality profiles, can replicate
+          their moral judgment. Click below to learn more !
+        </p>
+      </div>
+
+      <button class="continue-btn" onclick="goToHomepage()">
+        Discover my research
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Particles Background -->
+<div class="particles" id="particles"></div>
+{% endblock %} {% block extra_scripts %}
+<script>
+  let currentDilemma = null;
+  let userAnswer = null;
+
+  // All 44 dilemmas embedded in the page
+  const allDilemmas = {
+    d01pregr: {
+      title: "Ransom Dilemma",
+      text: "You are the president of your country. A guerilla group operating in a conflict zone has abducted a journalist from your country and threatens to behead him if your government does not pay a ransom of one million dollars. The group will use the ransom money to buy food for their families, who live in an area that has been plagued by several draughts. As the president, you have the power to approve payment of the ransom. Is it acceptable in this case to approve the ransom payment?",
+    },
+    d01presm: {
+      title: "Ransom Dilemma",
+      text: "You are the president of your country. A guerilla group operating in a conflict zone has abducted a journalist from your country and threatens to behead him if your government does not pay a ransom of one million dollars. The group will use the ransom money to buy weapons for their guerilla war, which will cause the deaths of many people. As the president, you have the power to approve payment of the ransom. Is it acceptable in this case to approve the ransom payment?",
+    },
+    d01progr: {
+      title: "Ransom Dilemma",
+      text: "You are the president of your country. A guerilla group operating in a conflict zone has abducted a journalist from your country and threatens to behead him if your government does not pay a ransom of one million dollars. The group will use the ransom money to buy weapons for their guerilla war, which will cause the deaths of many people. Congress has approved payment of the ransom, but you have the power to veto the payment. Is it acceptable in this case to veto the ransom payment?",
+    },
+    d01prosm: {
+      title: "Ransom Dilemma",
+      text: "You are the president of your country. A guerilla group operating in a conflict zone has abducted a journalist from your country and threatens to behead him if your government does not pay a ransom of one million dollars. The group will use the ransom money to buy food for their families, who live in an area that has been plagued by several draughts. Congress has approved payment of the ransom, but you have the power to veto the payment. Is it acceptable in this case to veto the ransom payment?",
+    },
+    d02pregr: {
+      title: "Organ Transplant Dilemma",
+      text: "You are a surgeon in a small hospital. One day, your hospital receives five badly hurt patients from a car accident. These patients all need organ transplants or they will have serious health problems for the rest of their lives. You have no spare organs, but there is a patient who has been in a coma for several weeks and it seems unlikely that he will wake up again. One of your co-workers plans to terminate his life support and take his organs for the five accident victims, so that they won’t suffer from health problems. You could stop your co-worker by informing the director of the hospital. Is it acceptable in this case to stop your co-worker from terminating the patient’s life support to take his organs?",
+    },
+    d02presm: {
+      title: "Organ Transplant Dilemma",
+      text: "You are a surgeon in a small hospital. One day, your hospital receives five badly hurt patients from a car accident. The patients all need organ transplants or they will die. You have no spare organs, but there is a patient who has been in a coma for several weeks and it seems unlikely that he will wake up again. One of your co-workers plans to terminate his life support and take his organs for the five accident victims, so that their lives will be saved. You could stop your co-worker by informing the director of the hospital. Is it acceptable in this case to stop your co-worker from terminating the patient’s life support to take his organs?",
+    },
+    d02progr: {
+      title: "Organ Transplant Dilemma",
+      text: "You are a surgeon in a small hospital. One day, your hospital receives five badly hurt patients from a car accident. The patients all need organ transplants or they will die. You have no spare organs, but there is a patient who has been in a coma for several weeks and it seems unlikely that he will wake up again. You could terminate his life support and take his organs for the five accident victims, so that their lives will be saved. Is it acceptable in this case to terminate the patient’s life support to take his organs?",
+    },
+    d02prosm: {
+      title: "Organ Transplant Dilemma",
+      text: "You are a surgeon in a small hospital. One day, your hospital receives five badly hurt patients from a car accident. These patients all need organ transplants or they will have serious health problems for the rest of their lives. You have no spare organs, but there is a patient who has been in a coma for several weeks and it seems unlikely that he will wake up again. You could terminate his life support and take his organs for the five accident victims, so that they won’t suffer from health problems. Is it acceptable in this case to terminate the patient’s life support to take his organs?",
+    },
+    d03pregr: {
+      title: "Interrogation Dilemma",
+      text: "You are a member of a special police department who is trained to obtain information in particularly difficult cases. You are dealing with a case involving a male adult who is accused of having stolen several paintings. You don’t know where he is hiding the paintings, and he refuses to tell you where they are. The paintings will likely be shipped to a different country if they are not found within the next 24 hours. You have tried every legal interrogation technique, but none of them were successful. To get information on where the paintings are, your partner starts using illegal techniques that are deemed torture, and you consider stopping him by reporting him to your supervisor. Is it acceptable in this case to stop your partner from using illegal interrogation techniques?",
+    },
+    d03presm: {
+      title: "Interrogation Dilemma",
+      text: "You are a member of a special police department who is trained to obtain information in particularly difficult cases. You are dealing with a case involving a male adult who is accused of having abducted several children. You don’t know where he is hiding the children, and he refuses to tell you where they are. The children will likely die from dehydration if they are not found within the next 24 hours. You have tried every legal interrogation technique, but none of them were successful. To get information on where the children are, your partner starts using illegal techniques that are deemed torture, and you consider stopping him by reporting him to your supervisor. Is it acceptable in this case to stop your partner from using illegal interrogation techniques?",
+    },
+    d03progr: {
+      title: "Interrogation Dilemma",
+      text: "You are a member of a special police department who is trained to obtain information in particularly difficult cases. You are dealing with a case involving a male adult who is accused of having abducted several children. You don’t know where he is hiding the children, and he refuses to tell you where they are. The children will likely die from dehydration if they are not found within the next 24 hours. You have tried every legal interrogation technique, but none of them were successful. To get information on where the children are, you consider the use of illegal techniques that are deemed torture. Is it acceptable in this case to use illegal interrogation techniques?",
+    },
+    d03prosm: {
+      title: "Interrogation Dilemma",
+      text: "You are a member of a special police department who is trained to obtain information in particularly difficult cases. You are dealing with a case involving a male adult who is accused of having stolen several paintings. You don’t know where he is hiding the paintings, and he refuses to tell you where they are. The paintings will likely be shipped to a different country if they are not found within the next 24 hours. You have tried every legal interrogation technique, but none of them were successful. To get information on where the paintings are, you consider the use of illegal techniques that are deemed torture. Is it acceptable in this case to use illegal interrogation techniques?",
+    },
+    d04pregr: {
+      title: "Moral Dilemma",
+      text: "You are a doctor and are treating a seriously ill, suffering patient. Even the strongest drugs do not relieve him from his pain anymore. He feels terrible agony, but you know that he will get better again soon. For days, he has been waiting to see improvements. Since he no longer wants to endure his pain, he repeatedly asks you to end his life. Suddenly, he has a severe heart attack. You could give him a drug to save him from dying. Is it acceptable in this case to provide your patient with this drug?",
+    },
+    d04presm: {
+      title: "Moral Dilemma",
+      text: "You are a doctor and are treating a seriously ill, suffering patient. Even the strongest drugs do not relieve him from his pain anymore. He feels terrible agony and you know that his condition will never improve. For days, he has been waiting for his death. Since he no longer wants to endure his pain, he repeatedly asks you to end his life. Suddenly, he has a severe heart attack. You could give him a drug to save him from dying. Is it acceptable in this case to provide your patient with this drug?",
+    },
+    d04progr: {
+      title: "Euthanasia Dilemma",
+      text: "You are a doctor and are treating a seriously ill, suffering patient. Even the strongest drugs do not relieve him from his pain anymore. He feels terrible agony and you know that his condition will never improve. For days, he has been waiting for his death. Since he no longer wants to endure his pain, he repeatedly asks you to end his life. You could give him a drug causing his death, which will release him from his pain. Is it acceptable in this case to provide your patient with this drug?",
+    },
+    d04prosm: {
+      title: "Euthanasia Dilemma",
+      text: "You are a doctor and are treating a seriously ill, suffering patient. Even the strongest drugs do not relieve him from his pain anymore. He feels terrible agony, but you know that he will get better again soon. For days, he has been waiting to see improvements. Since he no longer wants to endure his pain, he repeatedly asks you to end his life. You could give him a drug causing his death, which will release him from his pain. Is it acceptable in this case to provide your patient with this drug?",
+    },
+    d05pregr: {
+      title: "Quarantine Dilemma",
+      text: "You are the director of a hospital in a developing country. A foreign student who is volunteering in the country got infected with a rare virus. The virus is highly contagious and can cause severe stomach cramps. The student suffers from a chronic immune deficiency that will make her die from the virus if she is not returned to her home country for special treatment. However, taking her out of quarantine involves a considerable risk that the virus will spread. Is it acceptable in this case to take the student out of quarantine to return her to her home country for treatment?",
+    },
+    d05presm: {
+      title: "Quarantine Dilemma",
+      text: "You are the director of a hospital in a developing country. A foreign student who is volunteering in the country got infected with a rare virus. The virus is highly contagious and deadly to seniors and children. The student suffers from a chronic immune deficiency that will make her die from the virus if she is not returned to her home country for special treatment. However, taking her out of quarantine involves a considerable risk that the virus will spread. Is it acceptable in this case to take the student out of quarantine to return her to her home country for treatment?",
+    },
+    d05progr: {
+      title: "Quarantine Dilemma",
+      text: "You are the director of a hospital in a developing country. A foreign student who is volunteering in the country got infected with a rare virus. The virus is highly contagious and deadly to seniors and children. The only medication that can effectively stop the virus from spreading has severe side-effects. Although the virus will not kill her, the student suffers from a chronic immune deficiency that will make her die from these side-effects. Is it acceptable in this case to give the student the medication?",
+    },
+    d05prosm: {
+      title: "Quarantine Dilemma",
+      text: "You are the director of a hospital in a developing country. A foreign student who is volunteering in the country got infected with a rare virus. The virus is highly contagious and can cause severe stomach cramps. The only medication that can effectively stop the virus from spreading has severe side-effects. Although the virus will not kill her, the student suffers from a chronic immune deficiency that will make her die from these side-effects. Is it acceptable in this case to give the student the medication?",
+    },
+    d06pregr: {
+      title: "Vaccine Dilemma",
+      text: "You are a doctor in an area that suffers from an outbreak of a highly contagious disease. Preliminary tests have shown the success of a new vaccine that is not approved by the health department of your country, because of its severe side-effects. The side-effects of the vaccine will likely cause the death of dozens of people who are not infected, but the vaccine will save about the same number of lives by preventing spread of the virus. One of your colleagues plans to use the vaccine, but you could stop him by reporting his plans to the health department. Is it acceptable in this case to report your colleague to the health department?",
+    },
+    d06presm: {
+      title: "Vaccine Dilemma",
+      text: "You are a doctor in an area that suffers from an outbreak of a highly contagious disease. Preliminary tests have shown the success of a new vaccine that is not approved by the health department of your country, because of its severe side-effects. The side-effects of the vaccine will likely cause the death of dozens of people who are not infected, but the vaccine will save hundreds of lives by preventing spread of the virus. One of your colleagues plans to use the vaccine, but you could stop him by reporting his plans to the health department. Is it acceptable in this case to report your colleague to the health department?",
+    },
+    d06progr: {
+      title: "Vaccine Dilemma",
+      text: "You are a doctor in an area that suffers from an outbreak of a highly contagious disease. Preliminary tests have shown the success of a new vaccine that is not approved by the health department of your country, because of its severe side-effects. The side-effects of the vaccine will likely cause the death of dozens of people who are not infected, but the vaccine will save hundreds of lives by preventing spread of the virus. Is it acceptable in this case to use the vaccine?",
+    },
+    d06prosm: {
+      title: "Vaccine Dilemma",
+      text: "You are a doctor in an area that suffers from an outbreak of a highly contagious disease. Preliminary tests have shown the success of a new vaccine that is not approved by the health department of your country, because of its severe side-effects. The side-effects of the vaccine will likely cause the death of dozens of people who are not infected, but the vaccine will save about the same number of lives by preventing spread of the virus. Is it acceptable in this case to use the vaccine?",
+    },
+    d07pregr: {
+      title: "Restaurant Dilemma",
+      text: "You are the director of a dialysis clinic for patients with severe kidney problems. You are dealing with the case of a female patient with a kidney dysfunction who got food poisoning from a meal at a local restaurant. To remove the toxins from her blood, she requires an uninterrupted 24-hour dialysis session instead of the typical 4-hour session required by your other patients. If the woman does not complete the 24-hour treatment, the toxins in her blood will cause irreversible damage to her organs from which she will die. You have two other patients who need their regular 4-hours treatments and you have only one dialysis machine available right now. If these patients do not receive their regular treatments within 24 hours, they may experience serious nausea for the next two days. Is it acceptable in this case to start a 24-hour dialysis session for the female patient?",
+    },
+    d07presm: {
+      title: "Restaurant Dilemma",
+      text: "You are the director of a dialysis clinic for patients with severe kidney problems. You are dealing with the case of a female patient with a kidney dysfunction who got food poisoning from a meal at a local restaurant. To remove the toxins from her blood, she requires an uninterrupted 24-hour dialysis session instead of the typical 4-hour session required by your other patients. If the woman does not complete the 24-hour treatment, the toxins in her blood will cause irreversible damage to her organs from which she will die. You have six other patients who need their regular 4-hours treatments and you have only one dialysis machine available right now. If these patients do not receive their regular treatments within 24 hours, they would suffer from similar life-threatening damages to their inner organs. Is it acceptable in this case to start a 24-hour dialysis session for the female patient?",
+    },
+    d07progr: {
+      title: "Restaurant Dilemma",
+      text: "You are the director of a dialysis clinic for patients with severe kidney problems. You are dealing with the case of a female patient with a kidney dysfunction who got food poisoning from a meal at a local restaurant. To remove the toxins from her blood, she requires an uninterrupted 24-hour dialysis session instead of the typical 4-hour session required by your other patients. If the woman does not complete the 24-hour treatment, the toxins in her blood will cause irreversible damage to her organs from which she will die. The woman has received treatment for 30 minutes, but you have six other patients who need their regular 4-hours treatments and you have only one dialysis machine available right now. If these patients do not receive their regular treatments within 24 hours, they would suffer from similar life-threatening damages to their inner organs. Is it acceptable in this case to stop the female patient’s 24-hour dialysis session?",
+    },
+    d07prosm: {
+      title: "Restaurant Dilemma",
+      text: "You are the director of a dialysis clinic for patients with severe kidney problems. You are dealing with the case of a female patient with a kidney dysfunction who got food poisoning from a meal at a local restaurant. To remove the toxins from her blood, she requires an uninterrupted 24-hour dialysis session instead of the typical 4-hour session required by your other patients. If the woman does not complete the 24-hour treatment, the toxins in her blood will cause irreversible damage to her organs from which she will die. The woman has received treatment for 30 minutes, but you have two other patients who need their regular 4-hours treatments and you have only one dialysis machine available right now. If these patients do not receive their regular treatments within 24 hours, they may experience serious nausea for the next two days. Is it acceptable in this case to stop the female patient’s 24-hour dialysis session?",
+    },
+    d08pregr: {
+      title: "Construction Worker Dilemma",
+      text: "You are a construction worker on the construction site for a new high-rise of a wealthy and powerful investor. The man is known to increase his wealth by dubious practices. Specifically, he is bribing officials, so that he can evict tenants and convert the buildings into luxury properties. In several cases, tenants were unable to find comparable alternatives, but prosecutors have been unable to convict him. While you and the man are on top of the building, he slips and will fall from the building unless you grab him and pull him up. The building is high enough for the man to die, which would prevent him from causing more harm to innocent tenants. No one is around to see what is happening and his death would look like an accident. Is it acceptable in this case to grab the man and save him?",
+    },
+    d08presm: {
+      title: "Construction Worker Dilemma",
+      text: "You are a construction worker on the construction site for a new high-rise of a wealthy and powerful investor. The man is known to increase his wealth by dubious practices. Specifically, he is hiring people to set buildings on fire, so that he can evict tenants and convert the buildings into luxury properties. In several cases, tenants were seriously injured or killed, but prosecutors have been unable to convict him. While you and the man are on top of the building, he slips and will fall from the building unless you grab him and pull him up. The building is high enough for the man to die, which would prevent him from causing more harm to innocent tenants. No one is around to see what is happening and his death would look like an accident. Is it acceptable in this case to grab the man and save him?",
+    },
+    d08progr: {
+      title: "Construction Worker Dilemma",
+      text: "You are a construction worker on the construction site for a new high-rise of a wealthy and powerful investor. The man is known to increase his wealth by dubious practices. Specifically, he is hiring people to set buildings on fire, so that he can evict tenants and convert the buildings into luxury properties. In several cases, tenants were seriously injured or killed, but prosecutors have been unable to convict him. While you and the man are on top of the building, you see an opportunity to shove him off the building. The building is high enough for the man to die, which would prevent him from causing more harm to innocent tenants. No one is around to see what is happening and his death would look like an accident. Is it acceptable in this case to shove the man off the roof?",
+    },
+    d08prosm: {
+      title: "Construction Worker Dilemma",
+      text: "You are a construction worker on the construction site for a new high-rise of a wealthy and powerful investor. The man is known to increase his wealth by dubious practices. Specifically, he is bribing officials, so that he can evict tenants and convert the buildings into luxury properties. In several cases, tenants were unable to find comparable alternatives, but prosecutors have been unable to convict him. While you and the man are on top of the building, you see an opportunity to shove him off the building. The building is high enough for the man to die, which would prevent him from causing more harm to innocent tenants. No one is around to see what is happening and his death would look like an accident. Is it acceptable in this case to shove the man off the roof?",
+    },
+    d09pregr: {
+      title: "Restaurant Dilemma",
+      text: "You are head chef of a restaurant in a South American country governed by a controversial president. Since he came to power, he has been trying to suppress any opposition. Many people who dared to speak up against him have lost their jobs and now have to work for lower wages. The president is visiting the restaurant in which you work. You know he is highly allergic to peanuts, and you notice that a waiter accidentally mixed up his peanut-free dish with one that contains a small amount of peanut oil. Although the amount is too small to be noticeable, it would be enough to kill him and provide a chance for a new political era in your country. Is it acceptable in this case to prevent the waiter from serving the peanut dish?",
+    },
+    d09presm: {
+      title: "Restaurant Dilemma",
+      text: "You are head chef of a restaurant in a South American country governed by a controversial president. Since he came to power, he has been trying to suppress any opposition. Many people who dared to speak up against him suddenly “disappeared” and later their dead bodies were found in mass graves. The president is visiting the restaurant in which you work. You know he is highly allergic to peanuts, and you notice that a waiter accidentally mixed up his peanut-free dish with one that contains a small amount of peanut oil. Although the amount is too small to be noticeable, it would be enough to kill him and provide a chance for a new political era in your country. Is it acceptable in this case to prevent the waiter from serving the peanut dish?",
+    },
+    d09progr: {
+      title: "Restaurant Dilemma",
+      text: "You are head chef of a restaurant in a South American country governed by a controversial president. Since he came to power, he has been trying to suppress any opposition. Many people who dared to speak up against him suddenly “disappeared” and later their dead bodies were found in mass graves. The president is visiting the restaurant in which you work. You know he is highly allergic to peanuts, and you could include a small amount of peanut oil in his dish. Although the amount would be too small to be noticeable, it would be enough to kill him and provide a chance for a new political era in your country. Is it acceptable in this case to add peanut oil to the dish?",
+    },
+    d09prosm: {
+      title: "Restaurant Dilemma",
+      text: "You are head chef of a restaurant in a South American country governed by a controversial president. Since he came to power, he has been trying to suppress any opposition. Many people who dared to speak up against him have lost their jobs and now have to work for lower wages. The president is visiting the restaurant in which you work. You know he is highly allergic to peanuts, and you could include a small amount of peanut oil in his dish. Although the amount would be too small to be noticeable, it would be enough to kill him and provide a chance for a new political era in your country. Is it acceptable in this case to add peanut oil to the dish?",
+    },
+    d10pregr: {
+      title: "Development Aid Dilemma",
+      text: "You are project leader of a development aid team in a foreign country when ethnic tensions start to escalate. The members of the ethnic majority persecute the members of the ethnic minority. One of your minority employees arrives at the center of your team after witnessing a colleague being killed by an armed group of majority members. Shortly afterwards, the armed group gathers in front of your center. They threaten to set one of your team’s cars on fire that is parked in front of your center if you do not hand over the employee. If you hand over your employee, he will be shot and killed by the armed group. You know of a secret tunnel at your center that would allow your employee to flee without being harmed. Is it acceptable in this case to let your employee flee through the tunnel?",
+    },
+    d10presm: {
+      title: "Development Aid Dilemma",
+      text: "You are project leader of a development aid team in a foreign country when ethnic tensions start to escalate. The members of the ethnic majority persecute the members of the ethnic minority. One of your minority employees arrives at the center of your team after witnessing a colleague being killed by an armed group of majority members. Shortly afterwards, the armed group gathers in front of your center. They threaten to stop an approaching bus and kill all passengers belonging to the ethnic minority if you do not hand over the employee. If you hand over your employee, he will be shot and killed by the armed group. You know of a secret tunnel at your center that would allow your employee to flee without being harmed. Is it acceptable in this case to let your employee flee through the tunnel?",
+    },
+    d10progr: {
+      title: "Development Aid Dilemma",
+      text: "You are project leader of a development aid team in a foreign country when ethnic tensions start to escalate. The members of the ethnic majority persecute the members of the ethnic minority. One of your minority employees arrives at the center of your team after witnessing a colleague being killed by an armed group of majority members. Shortly afterwards, the armed group gathers in front of your center. They threaten to stop an approaching bus and kill all passengers belonging to the ethnic minority if you do not hand over the employee. If you hand over your employee, he will be shot and killed by the armed group. Is it acceptable in this case to hand over your employee to the armed group?",
+    },
+    d10prosm: {
+      title: "Development Aid Dilemma",
+      text: "You are project leader of a development aid team in a foreign country when ethnic tensions start to escalate. The members of the ethnic majority persecute the members of the ethnic minority. One of your minority employees arrives at the center of your team after witnessing a colleague being killed by an armed group of majority members. Shortly afterwards, the armed group gathers in front of your center. They threaten to set one of your team’s cars on fire that is parked in front of your center if you do not hand over the employee. If you hand over your employee, he will be shot and killed by the armed group. Is it acceptable in this case to hand over your employee to the armed group?",
+    },
+    d11pregr: {
+      title: "Mother Medication Dilemma",
+      text: "Your mother had an accident 5 years ago, a painful and emotionally draining experience for your family. Since then, she is partially paralyzed. There is no chance of recovery, because there has been permanent tissue damage. As a result, she will need a wheelchair for the rest of her life. However, your mother has adjusted very well to the state she is in, and she might live for 20 or 30 more years. Your mother receives multiple drugs from an automatic medication dispenser. You notice that the dispenser is malfunctioning and has already given her a larger dose than your mother should be given. An overdose would cause heart failure from which your mother would die. Is it acceptable in this case to stop the medication dispenser from giving your mother an overdose?",
+    },
+    d11presm: {
+      title: "Mother Medication Dilemma",
+      text: "Your mother had an accident 5 years ago, a painful and emotionally draining experience for your family. Since then, she is in a persistent vegetative state. There is no chance of recovery, because large parts of her brain are permanently damaged. As a result, she experiences severe chronic pain while being unable to communicate. However, despite the state your mother is in, she might live for 20 or 30 more years. Your mother receives multiple drugs from an automatic medication dispenser. You notice that the dispenser is malfunctioning and has already given her a larger dose than your mother should be given. An overdose would cause heart failure from which your mother would die. Is it acceptable in this case to stop the medication dispenser from giving your mother an overdose?",
+    },
+    d11progr: {
+      title: "Mother Medication Dilemma",
+      text: "Your mother had an accident 5 years ago, a painful and emotionally draining experience for your family. Since then, she is in a persistent vegetative state. There is no chance of recovery, because large parts of her brain are permanently damaged. As a result, she experiences severe chronic pain while being unable to communicate. However, despite the state your mother is in, she might live for 20 or 30 more years. Your mother receives multiple drugs from an automatic medication dispenser. An overdose would cause heart failure from which your mother would die, and nobody would notice that she did not die of natural causes. Is it acceptable in this case to set the medication dispenser to give your mother an overdose?",
+    },
+    d11prosm: {
+      title: "Mother Medication Dilemma",
+      text: "Your mother had an accident 5 years ago, a painful and emotionally draining experience for your family. Since then, she is partially paralyzed. There is no chance of recovery, because there has been permanent tissue damage. As a result, she will need a wheelchair for the rest of her life. However, your mother has adjusted very well to the state she is in, and she might live for 20 or 30 more years. Your mother receives multiple drugs from an automatic medication dispenser. An overdose would cause heart failure from which your mother would die, and nobody would notice that she did not die of natural causes. Is it acceptable in this case to set the medication dispenser to give your mother an overdose?",
+    },
+    d12pregr: {
+      title: "Church Official Dilemma",
+      text: "You are a church official during the Nazi occupation of the Netherlands. You have an official agreement with the occupying forces that protects anyone under your care. The Nazis have started to deport all Jewish citizens of your town to concentration camps. A Jewish family asks you to protect them in your church from deportation. From past experiences, you know that the Nazis would respond to your protection of the Jewish family by expelling the family, who would have to leave the country within 24 hours. Is it acceptable in this case to protect the Jewish family?",
+    },
+    d12presm: {
+      title: "Church Official Dilemma",
+      text: "You are a church official during the Nazi occupation of the Netherlands. You have an official agreement with the occupying forces that protects anyone under your care. The Nazis have started to deport all Jewish citizens of your town to concentration camps. A Jewish family asks you to protect them in your church from deportation. From past experiences, you know that the Nazis would respond to your protection of the Jewish family by executing dozens of Dutch people they have incarcerated for political reasons. Is it acceptable in this case to protect the Jewish family?",
+    },
+    d12progr: {
+      title: "Church Official Dilemma",
+      text: "You are a church official during the Nazi occupation of the Netherlands. You have an official agreement with the occupying forces that protects anyone under your care. You publicly spoke on behalf of a Jewish family, annoying the Nazis. To demonstrate their power, the Nazis demand that you kill the members of the Jewish family. Otherwise, they will execute dozens of Dutch people they have incarcerated for political reasons. Is it acceptable in this case to kill the Jewish family?",
+    },
+    d12prosm: {
+      title: "Church Official Dilemma",
+      text: "You are a church official during the Nazi occupation of the Netherlands. You have an official agreement with the occupying forces that protects anyone under your care. You publicly spoke on behalf of a Jewish family, annoying the Nazis. To demonstrate their power, the Nazis demand that you kill the members of the Jewish family. Otherwise, they will expel the family, who would have to leave the country within 24 hours. Is it acceptable in this case to kill the Jewish family?",
+    },
+  };
+
+  // Load a random dilemma on page load
+  document.addEventListener("DOMContentLoaded", () => {
+    loadRandomDilemma();
+  });
+
+  function loadRandomDilemma() {
+    // Select a random dilemma from all 44
+    const dilemmaIds = Object.keys(allDilemmas);
+    const randomId = dilemmaIds[Math.floor(Math.random() * dilemmaIds.length)];
+    currentDilemma = allDilemmas[randomId];
+
+    // Display the dilemma
+    displayDilemma(currentDilemma);
+  }
+
+  function displayDilemma(dilemma) {
+    document.getElementById("dilemmaQuestion").textContent = dilemma.title;
+    document.getElementById("dilemmaDescription").textContent = dilemma.text;
+  }
+
+  function submitResponse(response) {
+    userAnswer = response;
+
+    // Hide the dilemma and buttons
+    document.getElementById("responseButtons").style.display = "none";
+
+    // Show the thank you message
+    const thankYouMessage = document.getElementById("thankYouMessage");
+    document.getElementById("userResponse").textContent = response;
+    thankYouMessage.style.display = "block";
+
+    // Scroll to the message smoothly
+    setTimeout(() => {
+      thankYouMessage.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  }
+
+  function goToHomepage() {
+    // Add a nice transition effect
+    document.getElementById("welcomeCard").style.animation =
+      "fadeOut 0.5s ease-out";
+
+    setTimeout(() => {
+      window.location.href = "{{ url_for('index') }}";
+    }, 500);
+  }
+
+  // Add fade out animation
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+{% endblock %}

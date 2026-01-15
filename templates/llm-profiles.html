@@ -1,0 +1,73 @@
+{% extends "base.html" %} {% block title %}LLM Profiles - LLM Moral Judgment
+Study{% endblock %} {% block header_title %}LLM Profiles{% endblock %} {% block
+content %}
+<section class="page-content">
+  <article class="content-block">
+    <h2>Creating Artificial Agents</h2>
+    <p>
+      The key part of my project is to generate artificial agents using the
+      LLaMA-3 open-source LLM. Each profile is created from the Big Five
+      personality traits of a real participant from the Luke and Gawronski
+      dataset (2022).
+    </p>
+  </article>
+
+  <article class="content-block">
+    <h2>The Big Five Personality Traits</h2>
+    <div class="big-five-grid">
+      <div class="trait-box">
+        <h3>Openness</h3>
+        <p>Imagination, curiosity, willingness to try new experiences</p>
+      </div>
+      <div class="trait-box">
+        <h3>Conscientiousness</h3>
+        <p>Organization, dependability, goal-directed behavior</p>
+      </div>
+      <div class="trait-box">
+        <h3>Extraversion</h3>
+        <p>Sociability, assertiveness, emotional expressiveness</p>
+      </div>
+      <div class="trait-box">
+        <h3>Agreeableness</h3>
+        <p>Compassion, cooperation, trust in others</p>
+      </div>
+      <div class="trait-box">
+        <h3>Neuroticism</h3>
+        <p>Emotional stability, tendency toward negative emotions</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="content-block">
+    <h2>LLaMA-3 Model</h2>
+    <div class="models-comparison">
+      <div class="model-card">
+        <h3>LLaMA-3</h3>
+      </div>
+    </div>
+  </article>
+
+  <article class="content-block">
+    <h2>Generation Process</h2>
+    <p>
+      Based on prompts developed by Chiu et al. (2024), I create artificial
+      agents by providing LLaMA-3 with specific personality trait scores.
+    </p>
+    <p>
+      For example, if a real participant scored 4.2 in conscientiousness and 3.8
+      in neuroticism, the artificial agent is prompted to embody these same
+      trait levels.
+    </p>
+  </article>
+
+  <article class="content-block highlight">
+    <h2>Hypothesis</h2>
+    <p>
+      I make the hypothesis (supported by previous research on LLM agents) that
+      artificial agents with matched Big Five scores will accurately replicate
+      the moral decisions of the real participants whose personality they
+      simulate.
+    </p>
+  </article>
+</section>
+{% endblock %}
