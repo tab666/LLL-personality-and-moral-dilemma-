@@ -3,49 +3,45 @@ Study{% endblock %} {% block header_title %}CNI{% endblock %} {% block content
 %}
 <section class="page-content">
   <article class="content-block">
-    <h2>Why CNI parameters?</h2>
-    <p>
-      In the literature, previous researches measure the morality of LLM using a
-      binary approach: either their response to ethical dilemma is utilitarian,
-      either it is deontological. In my study, I aim to be more specific and use
-      a more complex measure of my artificial agents moral values.
-    </p>
+    <h2>What are CNI parameters?</h2>
   </article>
 
   <article class="content-block">
     <h2>CNI Model Parameters</h2>
     <p>
-      The CNI model breaks down moral judgments into three distinct parameters:
+      The CNI model breaks down moral judgments into three distinct parameters
+      between O and 1:
     </p>
     <div class="cni-parameters">
       <div class="parameter-box">
         <h3>C - Consequences</h3>
         <p><strong>Utilitarian thinking</strong></p>
         <p>
-          Sensitivity to the outcomes and consequences of actions. High C scores
-          indicates a utilitarian approach to moral reasoning.
-        </p>
-        <p class="example">
-          Example: "Moderate sensitivity to consequences (C=60)"
+          Sensitivity to the outcomes and consequences of your actions when you
+          deem them for the sake of greater good. The closer the C score is to
+          1, the less likely you are to make the choice to sacrifice something,
+          even when the benefits of action are greater than the cost.
         </p>
       </div>
       <div class="parameter-box">
         <h3>N - Norms</h3>
         <p><strong>Deontological thinking</strong></p>
         <p>
-          Sensitivity to moral norms and rules. High N scores indicate a
-          deontological approach emphasizing duties and principles.
+          Sensitivity to moral norms of not harming and caring for people. The
+          closer the N score is to 1, the less likely you are to support an
+          action when a norm prohibits it.
         </p>
-        <p class="example">Example: "Strong sensitivity to norms (N=85)"</p>
       </div>
+
       <div class="parameter-box">
         <h3>I - Inaction</h3>
         <p><strong>Action bias</strong></p>
         <p>
-          General bias toward inaction versus action. High I scores indicate a
-          preference for not intervening.
+          General bias toward inaction versus action. The closer the I score is
+          to 1, the less likely you are to intervene in any situation whether
+          there are good or bad consequences, whether the norms presrcibs it or
+          no.
         </p>
-        <p class="example">Example: "Low bias toward inaction (I=25)"</p>
       </div>
     </div>
   </article>

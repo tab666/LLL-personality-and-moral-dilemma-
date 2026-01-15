@@ -144,7 +144,7 @@ endblock %} {% block header_title %}Welcome{% endblock %} {% block extra_head %}
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    background: linear-gradient(135deg, #f8d697, #ffc857);
+    background: #f8d697; /* Solid yellow, no gradient */
     color: #1b6d80;
     margin-top: 30px;
     transition: all 0.3s ease;
@@ -176,11 +176,8 @@ endblock %} {% block header_title %}Welcome{% endblock %} {% block extra_head %}
 {% endblock %} {% block content %}
 <div class="welcome-container">
   <div class="welcome-card" id="welcomeCard">
-    <h1>Tough decision ahead !</h1>
-    <p>
-      Getting started, test yourself against this randomly generated moral
-      dilemma.
-    </p>
+    <h1>Take a look and answer !</h1>
+    <p>Test yourself against this randomly generated moral dilemma.</p>
 
     <div class="dilemma-box" id="dilemmaBox">
       <div class="dilemma-question" id="dilemmaQuestion">
@@ -483,17 +480,17 @@ endblock %} {% block header_title %}Welcome{% endblock %} {% block extra_head %}
   // Add fade out animation
   const style = document.createElement("style");
   style.textContent = `
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-        transform: translateY(0);
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
       }
-      to {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-    }
-  `;
+    `;
   document.head.appendChild(style);
 </script>
 {% endblock %}

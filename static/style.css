@@ -103,7 +103,7 @@ header h1 {
     rgba(27, 109, 128, 0.98),
     rgba(8, 107, 105, 0.98)
   );
-  padding: 80px 20px 20px 20px;
+  padding: 60px 20px 40px 20px; /* Reduced top padding from 80px to 60px */
   z-index: 1000;
   transition: left 0.4s ease;
   overflow-y: auto;
@@ -142,12 +142,12 @@ header h1 {
 }
 
 .nav-menu > li {
-  margin-bottom: 8px;
+  margin-bottom: 5px; /* Reduced from 8px */
 }
 
 .nav-menu > li > a {
   display: block;
-  padding: 15px 20px;
+  padding: 12px 20px; /* Reduced from 15px */
   color: white;
   text-decoration: none;
   font-size: 18px;
@@ -164,7 +164,7 @@ header h1 {
 }
 
 .nav-section {
-  margin-top: 25px;
+  margin-top: 15px; /* Reduced from 25px */
 }
 
 .section-title {
@@ -174,8 +174,8 @@ header h1 {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  padding: 10px 20px 8px 20px;
-  margin-bottom: 5px;
+  padding: 8px 20px 5px 20px; /* Reduced padding */
+  margin-bottom: 3px; /* Reduced from 5px */
 }
 
 .section-links {
@@ -186,7 +186,7 @@ header h1 {
 
 .section-links li a {
   display: block;
-  padding: 12px 20px 12px 35px;
+  padding: 10px 20px 10px 35px; /* Reduced from 12px */
   color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   font-size: 16px;
@@ -665,4 +665,152 @@ html {
 /* Offset for anchor links (to account for fixed header) */
 section[id] {
   scroll-margin-top: 100px;
+}
+/* ============================
+   HOME PAGE LAYOUT
+============================ */
+
+.home-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 70px;
+  padding: 80px 100px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.home-left {
+  flex: 1;
+  max-width: 500px;
+}
+
+.home-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ABOUT BOX */
+.about-box {
+  background: linear-gradient(
+    135deg,
+    rgba(27, 109, 128, 0.95),
+    rgba(8, 107, 105, 0.95)
+  );
+  border-radius: 18px;
+  padding: 40px;
+  color: white;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.about-box h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 28px;
+}
+
+.about-box p {
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* BUBBLE CHART CONTAINER */
+#bubbleChart {
+  width: 600px;
+  height: 600px;
+  position: relative;
+}
+
+/* RESEARCH QUESTION */
+.research-box {
+  max-width: 900px;
+  margin: 40px auto 80px auto;
+  padding: 40px;
+  border-radius: 18px;
+  background: #f8d697; /* Solid yellow, no gradient */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+}
+
+.research-box h2 {
+  margin-top: 0;
+  font-size: 28px;
+  color: #1b6d80;
+}
+
+.research-box p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #111;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .home-layout {
+    flex-direction: column;
+    padding: 60px 30px;
+  }
+
+  #bubbleChart {
+    width: 90vw;
+    height: 90vw;
+    max-width: 600px;
+    max-height: 600px;
+  }
+}
+/* Prevent horizontal scroll caused by 100vw separators */
+html,
+body {
+  overflow-x: hidden;
+}
+
+/* ================================
+   WHITE CENTERED PAGE TITLES
+   ================================ */
+.page-title-white {
+  color: white;
+  text-align: center;
+  font-size: 48px;
+  margin: 60px auto 40px auto;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+  font-weight: bold;
+}
+
+/* Subpage titles (smaller than main page title) */
+.subpage-title-white {
+  color: white;
+  text-align: center;
+  font-size: 36px;
+  margin: 50px auto 30px auto;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+  font-weight: bold;
+}
+
+/* ================================
+   GLOBAL SUBPAGE SEPARATORS
+   ================================ */
+.section-separator {
+  width: 100vw; /* full viewport width */
+  height: 8px; /* thickness */
+  margin: 60px 0; /* spacing */
+  position: relative;
+  left: 50%;
+  margin-left: -50vw; /* force edge-to-edge */
+}
+
+/* CONTEXT separators (Yellow) */
+.separator-context {
+  background-color: #f8d697;
+}
+
+/* DATA & METHODOLOGY separators (Teal) */
+.separator-data {
+  background-color: #1b6d80;
+}
+
+/* RESULTS separators (Yellow - same as Context) */
+.separator-results {
+  background-color: #f8d697;
 }

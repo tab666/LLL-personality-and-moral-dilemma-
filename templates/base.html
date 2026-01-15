@@ -114,7 +114,7 @@
             <ul class="section-links">
               <li>
                 <a href="{{ url_for('results') }}#visualizations-section">
-                  Visualizations
+                  Artificial Agents
                 </a>
               </li>
               <li>
@@ -122,14 +122,31 @@
                   Artificial Dataset
                 </a>
               </li>
+              <li>
+                <a href="{{ url_for('results') }}#morality-comparison-section">
+                  Morality Comparison
+                </a>
+              </li>
             </ul>
           </li>
 
           <li class="nav-section">
-            <span class="section-title">About the Study</span>
+            <a
+              href="{{ url_for('about_study') }}"
+              class="section-title section-title-link"
+            >
+              About the Study
+            </a>
             <ul class="section-links">
               <li>
-                <a href="{{ url_for('findings') }}">Findings</a>
+                <a href="{{ url_for('about_study') }}#study-report-section">
+                  Study Report
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('about_study') }}#bibliography-section">
+                  Bibliography
+                </a>
               </li>
             </ul>
           </li>

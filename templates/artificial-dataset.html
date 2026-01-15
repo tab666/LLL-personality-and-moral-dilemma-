@@ -3,45 +3,6 @@ Judgment Study{% endblock %} {% block header_title %}Artificial Agent Dataset
 Analysis{% endblock %} {% block extra_head %}
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <style>
-  .summary-stats {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin: 40px 0;
-    flex-wrap: wrap;
-  }
-
-  .stat-card {
-    background: linear-gradient(135deg, #1b6d80, #086b69);
-    padding: 25px 40px;
-    border-radius: 12px;
-    min-width: 200px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  }
-
-  .stat-card h3 {
-    margin: 0 0 10px 0;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
-    font-weight: normal;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .stat-card .number {
-    font-size: 42px;
-    font-weight: bold;
-    color: white;
-    margin: 0;
-  }
-
-  .stat-card .description {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.8);
-    margin-top: 8px;
-  }
-
   .viz-container {
     display: flex;
     flex-direction: column;
@@ -49,17 +10,6 @@ Analysis{% endblock %} {% block extra_head %}
     max-width: 900px;
     margin: 0 auto;
     padding: 20px;
-  }
-
-  .chart-section {
-    background: linear-gradient(
-      135deg,
-      rgba(27, 109, 128, 0.1),
-      rgba(8, 107, 105, 0.1)
-    );
-    padding: 30px;
-    border-radius: 15px;
-    border: 2px solid rgba(27, 109, 128, 0.3);
   }
 
   .chart-section h3 {
@@ -148,6 +98,10 @@ Analysis{% endblock %} {% block extra_head %}
   }
 </style>
 {% endblock %} {% block content %}
+
+<!-- WHITE CENTERED PAGE TITLE -->
+<h1 class="page-title-white">ARTIFICIAL DATASET</h1>
+
 <section class="page-content">
   <article class="content-block">
     <h2>Artificial Agent Dataset</h2>
@@ -157,32 +111,6 @@ Analysis{% endblock %} {% block extra_head %}
       profiles.
     </p>
   </article>
-
-  <div class="summary-stats">
-    <div class="stat-card">
-      <h3>Total Participants</h3>
-      <p class="number">250</p>
-    </div>
-    <div class="stat-card">
-      <h3>Big Five Traits</h3>
-      <p class="description">
-        Openness to Experience<br />
-        Conscientiousness Extraversion<br />
-        Agreeableness Neuroticism
-      </p>
-    </div>
-    <div class="stat-card">
-      <h3>CNI Parameters</h3>
-      <p class="description">
-        Sensibility to consequences, Sensibility to moral norms, Preference
-        toward inaction
-      </p>
-    </div>
-    <div class="stat-card">
-      <h3>Moral Dilemmas</h3>
-      <p class="number">48</p>
-    </div>
-  </div>
 
   <div class="viz-container">
     <div class="chart-section">

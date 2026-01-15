@@ -1,31 +1,42 @@
 {% extends "base.html" %} {% block title %}Home - LLM Moral Judgment Study{%
-endblock %} {% block header_title %}Can a Large Language Model steal my
-personality and moral values ?{% endblock %} {% block extra_head %}
+endblock %} {% block header_title %} Can Large Language Models steal my moral
+personality ... or be worse ? {% endblock %} {% block extra_head %}
 <script src="https://d3js.org/d3.v7.min.js"></script>
 {% endblock %} {% block content %}
-<!-- Visualization Section -->
-<section class="visualization-section">
-  <div id="bubbleChart"></div>
+
+<!-- ===== HOME MAIN ROW ===== -->
+<section class="home-layout">
+  <!-- LEFT: ABOUT -->
+  <div class="home-left">
+    <div class="about-box">
+      <h2>About the Study</h2>
+      <p>
+        I explore how Large Language Models respond to moral dilemmas when
+        simulating a human personality.
+      </p>
+    </div>
+  </div>
+
+  <!-- RIGHT: BUBBLE CHART -->
+  <div class="home-right">
+    <div id="bubbleChart"></div>
+  </div>
 </section>
 
-<section class="main_intro centered">
-  <aside>
-    <h2>About the Study</h2>
-    <p>
-      This is a comparative study that aims to explore how LLMs with a simulated
-      human personality respond to moral dilemmas.
-    </p>
-  </aside>
-  <article>
-    <h2>Research Question</h2>
-    <p>
-      Can artificial agents, by reproducing human personality traits through the
-      Big Five model, implicitly replicate human behavior when facing moral
-      dilemmas?
-    </p>
-  </article>
+<!-- ===== RESEARCH QUESTION ===== -->
+<section class="research-box">
+  <h2>Research Question</h2>
+  <p>
+    <strong
+      ><p style="font-size: 22px">
+        Can an LLM, given a cognitive personality, implictly replicate human
+        behavior when facing moral dilemmas ?
+      </p></strong
+    >
+  </p>
 </section>
 
-<!-- Particles Background -->
+<!-- Background particles -->
 <div class="particles" id="particles"></div>
+
 {% endblock %}

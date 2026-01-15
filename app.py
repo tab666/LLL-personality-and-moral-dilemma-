@@ -13,6 +13,7 @@ app.config['RESTFUL_JSON'] = {'ensure_ascii': False}
 # =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
+STATIC_DIR = os.path.join(BASE_DIR, "static")  # Flask automatically serves /static
 
 # Filenames (expected inside /data)
 RESPONSES_FILE = "ALL_BATCHES_COMBINED_BALANCED.csv"
@@ -142,6 +143,11 @@ def artificial_dataset():
 def findings():
     return render_template('findings.html', page='findings')
 
+# Route for about study page (NEW)
+@app.route('/about-study')
+def about_study():
+    return render_template('about-study.html', page='about-study')
+
 # API route to get all data (for visualizations)
 @app.route('/api/data')
 def get_all_data():
@@ -189,6 +195,7 @@ def get_artificial_data():
 
         columns_needed = [
             'Subject', 'Extra', 'Agree', 'Con', 'Neuro', 'Open',
+            'C', 'N', 'I',  # Human CNI parameters
             'C_artificial', 'N_artificial', 'I_artificial'
         ]
         artificial_subset = artificial_data[columns_needed]
