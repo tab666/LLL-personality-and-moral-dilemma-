@@ -1,4 +1,3 @@
-Madam, Sir, 
 
 Here is my research project website "AI, Ethics and Cognitive Personality: Can Large Language Model steal my personality... or be worse ?"
 
