@@ -14,5 +14,5 @@ static/ – CSS and images (plots, icons, etc.)
 data/ – CSV files with human and artificial CNI parameters and personality scores
 
 
-Don't hesitate to ask any question ! 
+
 
